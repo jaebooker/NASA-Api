@@ -1,6 +1,4 @@
-/**
- * Module dependencies.
- */
+
 const express = require('express');
 const compression = require('compression');
 const session = require('express-session');
@@ -19,41 +17,24 @@ const multer = require('multer');
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 
-/**
- * Load environment variables from .env file, where API keys and passwords are configured.
- */
+
 dotenv.load({ path: '.env.example' });
 
-/**
- * Create Express server.
- */
+
 const app = express();
 
-/**
- * Configurations
- */
+
 app.config = require('./config/master')();
 
-/**
- * Logging
- */
+
 app.log = require('./utils/logger')(app);
 app.chalk = require('chalk');
 
-/**
- * Middleware
- */
+
 app.middleware = require('./utils/middleware')(app);
 
-
-/**
- * Schema validation
- */
 app.validator = require('./utils/validator')(app);
 
-/**
- * Connect to MongoDB.
- */
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
 mongoose.connection.on('error', (err) => {
@@ -62,9 +43,6 @@ mongoose.connection.on('error', (err) => {
   process.exit();
 });
 
-/**
- * Express configuration.
- */
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -80,26 +58,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.xssProtection(true));
-// app.use((req, res, next) => {
-//   res.locals.user = req.user;
-//   next();
-// });
-
-
 require('./models')(app);
 require('./controllers')(app);
 require('./routes')(app);
 
-/**
- * Error Handler.
- */
+
 app.use(errorHandler());
 
-/**
- * Start Express server.
- */
+
 app.listen(app.get('port'), () => {
   app.log.info('%s App is running at http://localhost:%d in %s mode', app.chalk.green('✓'), app.get('port'), app.get('env')); 
   app.log.info('  Press CTRL-C to stop\n');
