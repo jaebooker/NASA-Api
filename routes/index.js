@@ -8,7 +8,7 @@ module.exports = function(app) {
 	fs.readdirSync(__dirname).forEach(function(file) {
 
 	  if (file !== "index.js" && path.extname(file) === '.js'){
-      app.log.info('Loading route ' + app.chalk.yellow('→'), file);
+	  app.log.info('Loading route ' + app.chalk.yellow('→'), file);
 	    require(path.join(__dirname,file))(app);
 	  }
 
@@ -52,5 +52,6 @@ module.exports = function(app) {
   });
     res.sendStatus(200);
   });
+  app.get('/planet', app.controllers.api.getPlanet);
 
 };
